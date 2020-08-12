@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+
+Route::get('/', 'IndexController@index')->name('index');
+Route::get('/show/{id}', 'IndexController@showw');
+Auth::routes();
+
+//Route::get('/home', 'HomeController@index')->name('home');
+
+Route::prefix('admin')->middleware('auth' , 'ceckType:admin') ->group(function(){
+    Route::resource('product','ProductController');
+    Route::resource('user','UserController');    
 });
+Route::get('logout' , 'Auth\LoginController@logout')->name('logout');
+Route::resource('profile','ProfileController');
+Route::resource('cart','CartController')->middleware('auth');
+Route::post('search' , 'IndexController@search')->name('search');
+
